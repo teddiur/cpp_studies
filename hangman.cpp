@@ -2,6 +2,7 @@
 #include <string>
 #include <map>
 #include <vector>
+#include <fstream>
 
 using namespace std;
 
@@ -110,9 +111,27 @@ void handle_guess(char guess)
     cout << endl;
 }
 
+void read_file()
+{
+    ifstream my_file;
+    my_file.open("words.txt");
+
+    int word_quantity;
+    my_file >> word_quantity;
+    cout << "O arquivo possui " << word_quantity << " palavras." << endl;
+    for (int i = 0; i < word_quantity; i++)
+    {
+        string word_read;
+        my_file >> word_read;
+        cout << "Na linha " << i << ": " << word_read << endl;
+    }
+}
+
 int main()
 {
     greetings();
+
+    read_file();
     while (has_tries_left() && !got_all_letters())
     {
 
