@@ -81,6 +81,35 @@ bool has_tries_left()
     return wrong_guesses.size() < 5;
 }
 
+void print_endgame_messages()
+{
+    cout << "Fim de jogo!" << endl;
+    cout << "A palavra secreta era " << SECRET_WORD << endl;
+
+    if (!got_all_letters())
+    {
+        cout << "Você perdeu! Tente novamente" << endl;
+    }
+    else
+    {
+        cout << "Parabéns! Você acertou a palavra secreta" << endl;
+    }
+}
+
+void handle_guess(char guess)
+{
+    if (char_in_string(guess))
+    {
+        cout << "Você acertou, o seu chute está na palavra!" << endl;
+    }
+    else
+    {
+        cout << "Você errou, o seu chute não está na palavra!" << endl;
+        wrong_guesses.push_back(guess);
+    }
+    cout << endl;
+}
+
 int main()
 {
     greetings();
@@ -94,15 +123,8 @@ int main()
         char guess = get_user_guess();
         has_guessed[guess] = true;
 
-        if (char_in_string(guess))
-        {
-            cout << "Você acertou, o seu chute está na palavra!" << endl;
-        }
-        else
-        {
-            cout << "Você errou, o seu chute não está na palavra!" << endl;
-            wrong_guesses.push_back(guess);
-        }
-        cout << endl;
+        handle_guess(guess);
     }
+
+    print_endgame_messages();
 }
