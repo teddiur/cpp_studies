@@ -3,10 +3,12 @@
 #include <map>
 #include <vector>
 #include <fstream>
+#include <ctime>
+#include <cstdlib>
 
 using namespace std;
 
-const string SECRET_WORD = "MELANCIA";
+string SECRET_WORD;
 map<char, bool> has_guessed;
 vector<char> wrong_guesses;
 
@@ -111,27 +113,41 @@ void handle_guess(char guess)
     cout << endl;
 }
 
-void read_file()
+vector<string> read_file()
 {
     ifstream my_file;
+    vector<string> words;
     my_file.open("words.txt");
 
     int word_quantity;
     my_file >> word_quantity;
-    cout << "O arquivo possui " << word_quantity << " palavras." << endl;
     for (int i = 0; i < word_quantity; i++)
     {
-        string word_read;
-        my_file >> word_read;
-        cout << "Na linha " << i << ": " << word_read << endl;
+        string current_word;
+        my_file >> current_word;
+        words.push_back(current_word);
     }
+    return words;
+}
+
+void choose_word()
+{
+    vector<string> words;
+    int index;
+    words = read_file();
+
+    srand(time(NULL));
+    index = rand() % words.size();
+
+    SECRET_WORD = words[index];
 }
 
 int main()
 {
-    greetings();
 
-    read_file();
+    greetings();
+    choose_word();
+
     while (has_tries_left() && !got_all_letters())
     {
 
