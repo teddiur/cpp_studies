@@ -8,13 +8,13 @@
 
 using namespace std;
 
-string SECRET_WORD;
+string secret_word;
 map<char, bool> has_guessed;
 vector<char> wrong_guesses;
 
 bool char_in_string(char guess)
 {
-    for (char letter : SECRET_WORD)
+    for (char letter : secret_word)
     {
         if (guess == letter)
         {
@@ -45,7 +45,7 @@ void print_wrong_guesses(vector<char> wrong_guesses)
 
 void print_hangman_letters(map<char, bool> has_guessed)
 {
-    for (char letter : SECRET_WORD)
+    for (char letter : secret_word)
     {
         if (has_guessed[letter])
         {
@@ -69,7 +69,7 @@ char get_user_guess()
 
 bool got_all_letters()
 {
-    for (char letter : SECRET_WORD)
+    for (char letter : secret_word)
     {
         if (!has_guessed[letter])
         {
@@ -87,7 +87,7 @@ bool has_tries_left()
 void print_endgame_messages()
 {
     cout << "Fim de jogo!" << endl;
-    cout << "A palavra secreta era " << SECRET_WORD << endl;
+    cout << "A palavra secreta era " << secret_word << endl;
 
     if (!got_all_letters())
     {
@@ -130,7 +130,7 @@ vector<string> read_file()
     return words;
 }
 
-void choose_word()
+void choose_secret_word()
 {
     vector<string> words;
     int index;
@@ -139,14 +139,14 @@ void choose_word()
     srand(time(NULL));
     index = rand() % words.size();
 
-    SECRET_WORD = words[index];
+    secret_word = words[index];
 }
 
 int main()
 {
 
     greetings();
-    choose_word();
+    choose_secret_word();
 
     while (has_tries_left() && !got_all_letters())
     {
