@@ -5,6 +5,7 @@
 #include <fstream>
 #include <ctime>
 #include <cstdlib>
+#include <algorithm>
 
 using namespace std;
 
@@ -84,7 +85,73 @@ bool has_tries_left()
     return wrong_guesses.size() < 5;
 }
 
-void print_endgame_messages()
+void toupper_str(string &word)
+{
+    transform(word.begin(), word.end(), word.begin(), ::toupper);
+}
+
+void save_db_file(vector<string> words)
+{
+    ofstream db;
+    db.open("words.txt");
+    if (db.is_open())
+    {
+        db << words.size() << endl;
+        for (string word : words)
+        {
+            db << word << endl;
+        }
+
+        db.close();
+    }
+    else
+    {
+        cout << "Não foi possível acessar o banco de palavras." << endl;
+        exit(0);
+    }
+}
+
+vector<string> read_file()
+{
+    ifstream my_file;
+    vector<string> words;
+    my_file.open("words.txt");
+
+    if (my_file.is_open())
+    {
+        int word_quantity;
+        my_file >> word_quantity;
+        for (int i = 0; i < word_quantity; i++)
+        {
+            string current_word;
+            my_file >> current_word;
+            words.push_back(current_word);
+        }
+
+        my_file.close();
+        return words;
+    }
+    else
+    {
+        cout << "Não foi possível acessar o banco de palavras." << endl;
+        exit(0);
+    }
+}
+
+void add_word_to_db()
+{
+    cout << "Digite a nova palavra: " << endl;
+    string new_word;
+    cin >> new_word;
+    toupper_str(new_word);
+
+    vector<string> words;
+    words = read_file();
+    words.push_back(new_word);
+    save_db_file(words);
+}
+
+void handle_endgame()
 {
     cout << "Fim de jogo!" << endl;
     cout << "A palavra secreta era " << secret_word << endl;
@@ -96,6 +163,13 @@ void print_endgame_messages()
     else
     {
         cout << "Parabéns! Você acertou a palavra secreta" << endl;
+        cout << "Você deseja adicionar uma nova palavra ao jogo? (S/N)" << endl;
+        char answer;
+        cin >> answer;
+        if (toupper(answer) == 'S')
+        {
+            add_word_to_db();
+        }
     }
 }
 
@@ -113,32 +187,14 @@ void handle_guess(char guess)
     cout << endl;
 }
 
-vector<string> read_file()
-{
-    ifstream my_file;
-    vector<string> words;
-    my_file.open("words.txt");
-
-    int word_quantity;
-    my_file >> word_quantity;
-    for (int i = 0; i < word_quantity; i++)
-    {
-        string current_word;
-        my_file >> current_word;
-        words.push_back(current_word);
-    }
-    return words;
-}
-
 void choose_secret_word()
 {
-    vector<string> words;
     int index;
+    vector<string> words;
     words = read_file();
 
     srand(time(NULL));
     index = rand() % words.size();
-
     secret_word = words[index];
 }
 
@@ -161,5 +217,5 @@ int main()
         handle_guess(guess);
     }
 
-    print_endgame_messages();
+    handle_endgame();
 }
